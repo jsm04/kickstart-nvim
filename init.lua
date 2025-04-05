@@ -32,7 +32,7 @@ local disabled_built_ins = {
   'vimballPlugin',
   '2html_plugin',
   'logipat',
-  'man',
+  -- 'man',
   'shada_plugin',
   'spellfile_plugin',
   'rrhelper',
@@ -160,7 +160,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 21
+vim.opt.scrolloff = 8
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -177,17 +177,27 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'qf', 'man', 'help' },
+-- Bind q to just close windows easily close windows
+
+vim.api.nvim_create_autocmd({ 'FileType', 'BufWinEnter' }, {
   callback = function()
     local ft = vim.bo.filetype
-    if ft == 'man' or ft == 'help' then
-      vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':quit<CR>', { noremap = true, silent = true })
+    local bt = vim.bo.buftype
+
+    -- Handle man, help, git, fugitiveblame
+    if ft == 'man' or ft == 'help' or ft == 'git' or ft == 'fugitiveblame' then
+      vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, silent = true })
+
+    -- Handle quickfix diagnostics
     elseif ft == 'qf' then
       local loclist = vim.fn.getloclist(0, { title = 1 })
       if loclist.title and loclist.title:find 'Diagnostics' then
-        vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':lclose<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', 'q', '<cmd>lclose<CR>', { buffer = true, silent = true })
       end
+
+    -- Handle floating windows (like Gitsigns preview hunk)
+    elseif bt == 'nofile' or bt == 'popup' then
+      vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, silent = true })
     end
   end,
 })
@@ -204,7 +214,6 @@ vim.api.nvim_set_keymap('n', '<Leader>tt', ':FloatermToggle<CR>', { noremap = tr
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
---
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
@@ -217,13 +226,16 @@ vim.keymap.set('n', '<C-M-l>', ':vertical resize +2<CR>', { noremap = true, sile
 vim.keymap.set('n', '<C-M-j>', ':resize -2<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-M-k>', ':resize +2<CR>', { noremap = true, silent = true })
 
+-- Tabs
+vim.keymap.set('n', 't]', ':tabnext<CR>', { silent = true, desc = 'Next tab' })
+vim.keymap.set('n', 't[', ':tabprevious<CR>', { silent = true, desc = 'Previous tab' })
+vim.keymap.set('n', 'tt', ':tabnew<CR>', { silent = true, desc = 'New tab' })
+
 -- Buffers
-vim.keymap.set('n', '<Leader>bd', ':bd<CR>', { noremap = true, silent = true })
--- Close buffer without closing the window
-vim.keymap.set('n', '<Leader>bD', ':bp | bd #<CR>', { noremap = true, silent = true })
--- Go to previous and next buffer
 vim.keymap.set('n', '[b', ':bprevious<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', ']b', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>bd', ':bd<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>bD', ':bp | bd #<CR>', { noremap = true, silent = true })
 
 -- Go to previous and next tag
 vim.keymap.set('n', '[t', ':tselect<CR>', { noremap = true, silent = true })
@@ -255,8 +267,6 @@ end, { desc = 'Show only errors, hide warnings/info' })
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
@@ -415,24 +425,9 @@ require('lazy').setup({
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
-      -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
-      -- many different aspects of Neovim, your workspace, LSP, and more!
-      --
-      -- The easiest way to use Telescope, is to start by doing something like:
-      --  :Telescope help_tags
-      --
-      -- After running this command, a window will open up and you're able to
-      -- type in the prompt window. You'll see a list of `help_tags` options and
-      -- a corresponding preview of the help.
-      --
       -- Two important keymaps to use while in Telescope are:
       --  - Insert mode: <c-/>
       --  - Normal mode: ?
-      --
-      -- This opens a window that shows you all of the keymaps for the current
-      -- Telescope picker. This is really useful to discover what Telescope can
-      -- do as well as how to actually do it!
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
@@ -475,6 +470,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[S]earch [J]ump registers' })
+      vim.keymap.set('n', '<leader>sm', builtin.marks, { desc = '[S]earch existing [M]arks' })
+      vim.keymap.set('n', '<leader>sy', builtin.registers, { desc = '[S]earch [Y]anked registers' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -482,8 +480,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
+          -- winblend = 10,
+          -- previewer = false,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
@@ -865,7 +863,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          --  TODO: This doesnt work, find out why
+          --  TODO: This dmesnt work, find out why
           -- ['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- Try this keymaps
