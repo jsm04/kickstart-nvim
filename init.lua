@@ -210,7 +210,7 @@ vim.api.nvim_create_autocmd({ 'FileType', 'BufWinEnter' }, {
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Term toggle
-vim.api.nvim_set_keymap('n', '<Leader>tt', ':FloatermToggle<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>\\', ':FloatermToggle<CR>', { noremap = true, silent = true })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -229,7 +229,6 @@ vim.keymap.set('n', '<C-M-k>', ':resize +2<CR>', { noremap = true, silent = true
 -- Tabs
 vim.keymap.set('n', 't]', ':tabnext<CR>', { silent = true, desc = 'Next tab' })
 vim.keymap.set('n', 't[', ':tabprevious<CR>', { silent = true, desc = 'Previous tab' })
-vim.keymap.set('n', 'tt', ':tabnew<CR>', { silent = true, desc = 'New tab' })
 
 -- Buffers
 vim.keymap.set('n', '[b', ':bprevious<CR>', { noremap = true, silent = true })
@@ -301,6 +300,11 @@ vim.api.nvim_set_keymap('n', '<leader>e', ':Explore<CR>', { noremap = true, sile
 
 -- Hover lps info
 vim.api.nvim_set_keymap('n', 'gh', ':lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
+
+-- User commands
+vim.api.nvim_create_user_command('Trim', function()
+  vim.cmd [[%s/\s\+$//e]]
+end, {})
 
 -- Add border to LSP hover window
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
@@ -915,7 +919,8 @@ require('lazy').setup({
   {
     'MeanderingProgrammer/render-markdown.nvim',
     lazy = true,
-    ft = 'markdown',
+    enabled = false,
+    ft = { 'markdown' },
     opts = {
       completions = { lsp = { enabled = true } },
     },
@@ -979,7 +984,11 @@ require('lazy').setup({
       colors = {
         background = '#101010',
         activeBackground = '#101010',
+
+        lowBackground = '#101010',
+        lowActiveBackground = '#101010',
       },
+
       themes = {},
     },
   },
