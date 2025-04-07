@@ -701,8 +701,19 @@ require('lazy').setup({
         prettier = {},
         html = {},
         emmet_ls = {},
-        cssls = {},
+        cssls = {
+          settings = {
+            css = {
+              lint = {
+                unknownAtRules = 'ignore',
+              },
+            },
+          },
+        },
+        tailwindcss = {},
         astro = {},
+        svelte = {},
+
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         lua_ls = {
           settings = {
