@@ -799,7 +799,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'ruff', 'black', stop_after_first = true },
+        -- python = {},
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettierd', 'prettier', stop_after_first = true },
@@ -1007,16 +1007,27 @@ require('lazy').setup({
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('lualine').setup {
-        -- options = {
-        --   theme = 'vscode',
-        -- },
-        options = {
-          theme = 'vitesse',
+    opts = {
+      options = {
+        globalstatus = false,
+      },
+
+      sections = {
+        lualine_a = {
+          'mode',
         },
-      }
-    end,
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_c = {
+          {
+            'filename',
+            path = 3,
+          },
+        },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' },
+      },
+    },
   },
 
   -- Highlight todo, notes, etc in comments
