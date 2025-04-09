@@ -148,7 +148,7 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '▸·', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '▸ ', trail = '·', nbsp = '␣' }
 
 -- Toggle whitespace
 vim.api.nvim_set_keymap('n', '<leader>tw', ':set list!<CR>', { noremap = true, silent = true })
@@ -1020,7 +1020,7 @@ require('lazy').setup({
         lualine_c = {
           {
             'filename',
-            path = 3,
+            path = 1,
           },
         },
         lualine_x = { 'encoding', 'fileformat', 'filetype' },
