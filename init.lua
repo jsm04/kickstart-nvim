@@ -68,6 +68,9 @@ if vim.g.neovide then
   vim.o.guifont = 'JetBrains Mono:h13' -- text below applies for VimScript
 end
 
+-- Ocaml
+-- set rtp^="/home/jsm/.opam/5.3.0/share/ocp-indent/vim"
+
 -- Set blending options
 vim.opt.winblend = 0
 vim.opt.pumblend = 0
@@ -633,7 +636,6 @@ require('lazy').setup({
 
           -- The following code creates a keymap to toggle inlay hints in your
           -- code, if the language server you are using supports them
-          --
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             map('<leader>th', function()
@@ -728,19 +730,6 @@ require('lazy').setup({
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --
-      -- To check the current status of installed tools and/or manually install
-      -- other tools, you can run
-      --    :Mason
-      --
-      -- You can press `g?` for help in this menu.
-      --
-      -- `mason` had to be setup earlier: to configure its options see the
-      -- `dependencies` table for `nvim-lspconfig` above.
-      --
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
@@ -840,10 +829,6 @@ require('lazy').setup({
       },
 
       'saadparwaiz1/cmp_luasnip',
-
-      -- Adds other completion capabilities.
-      --  nvim-cmp does not ship with all sources by default. They are split
-      --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-nvim-lsp-signature-help',
@@ -938,73 +923,6 @@ require('lazy').setup({
   },
 
   {
-    'Mofiqul/vscode.nvim',
-    lazy = true,
-    config = function()
-      require('vscode').setup {
-        transparent = true,
-        italic_comments = true,
-        underline_links = true,
-        terminal_colors = true,
-        color_overrides = {},
-        group_overrides = {},
-      }
-    end,
-  },
-
-  {
-    'craftzdog/solarized-osaka.nvim',
-    lazy = true,
-    opts = {
-      transparent = false, -- Enable this to disable setting the background color
-      terminal_colors = false, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
-      styles = {
-        comments = { italic = true },
-        keywords = { italic = true },
-        functions = {},
-        variables = {},
-        sidebars = 'dark',
-        floats = 'dark',
-      },
-      sidebars = { 'qf', 'help' }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-      day_brightness = 0,
-      hide_inactive_statusline = false,
-      dim_inactive = false, -- dims inactive windows
-      lualine_bold = true, -- When `true`, section headers in the lualine theme will be bold
-    },
-  },
-
-  {
-    '2nthony/vitesse.nvim',
-    lazy = false,
-    priority = 500,
-    dependencies = {
-      'tjdevries/colorbuddy.nvim',
-    },
-    opts = {
-      comment_italics = true,
-      transparent_background = true,
-      transparent_float_background = true, -- aka pum(popup menu) background
-      reverse_visual = false,
-      dim_nc = false,
-      cmp_cmdline_disable_search_highlight_group = false, -- disable search highlight group for cmp item
-      telescope_border_follow_float_background = false,
-      lspsaga_border_follow_float_background = false,
-      diagnostic_virtual_text_background = false,
-
-      colors = {
-        background = '#101010',
-        activeBackground = '#101010',
-
-        lowBackground = '#101010',
-        lowActiveBackground = '#101010',
-      },
-
-      themes = {},
-    },
-  },
-
-  {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {
@@ -1042,11 +960,9 @@ require('lazy').setup({
     end,
   },
 
-  { -- Collection of various small independent plugins/modules
+  {
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
       -- Examples:
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
@@ -1060,20 +976,9 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
       -- Mini status line setup
       -- local statusline = require 'mini.statusline'
       -- statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      -- statusline.section_location = function()
-      --   return '%2l:%-2v'
-      -- end
     end,
   },
 
@@ -1145,21 +1050,12 @@ require('lazy').setup({
     end,
   },
 
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
-  --
+  { import = 'custom.plugins' },
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
@@ -1180,4 +1076,4 @@ require('lazy').setup({
   },
 })
 
-vim.cmd [[colorscheme vitesse]]
+vim.cmd [[colorscheme quantum]]
