@@ -1,19 +1,29 @@
 return {
   {
-    'Mofiqul/vscode.nvim',
-    lazy = true,
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
     opts = {
+      style = 'night',
+      light_style = 'day',
       transparent = true,
-      italic_comments = true,
-      underline_links = true,
-      terminal_colors = true,
+      terminal_colors = false,
+      styles = {
+        comments = { italic = true },
+        keywords = { italic = true },
+        functions = {},
+        variables = {},
+        sidebars = 'transparent',
+        floats = 'transparent',
+      },
+      dim_inactive = false,
+      lualine_bold = true,
     },
   },
 
   {
     'kjssad/quantum.vim',
-    lazy = false,
-    priority = 500,
+    lazy = true,
     opts = {
       style = {
         italics = {
@@ -76,15 +86,45 @@ return {
       lspsaga_border_follow_float_background = false,
       diagnostic_virtual_text_background = false,
 
-      colors = {
-        background = '#101010',
-        activeBackground = '#101010',
-
-        lowBackground = '#101010',
-        lowActiveBackground = '#101010',
-      },
+      colors = {},
 
       themes = {},
+    },
+  },
+
+  {
+    'navarasu/onedark.nvim',
+    lazy = true,
+    opts = {
+      style = 'dark', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+      transparent = true,
+      term_colors = false,
+      ending_tildes = false,
+      cmp_itemkind_reverse = false,
+
+      toggle_style_key = nil,
+      toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+
+      code_style = {
+        comments = 'italic',
+        keywords = 'italic',
+        functions = 'none',
+        strings = 'none',
+        variables = 'none',
+      },
+
+      lualine = {
+        transparent = true,
+      },
+
+      colors = {},
+      highlights = {},
+
+      diagnostics = {
+        darker = true,
+        undercurl = true,
+        background = false,
+      },
     },
   },
 }

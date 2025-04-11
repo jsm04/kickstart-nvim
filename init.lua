@@ -1076,4 +1076,4 @@ require('lazy').setup({
   },
 })
 
-vim.cmd [[colorscheme quantum]]
+vim.cmd [[colorscheme vitesse]]
