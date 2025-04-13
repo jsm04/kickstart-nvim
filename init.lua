@@ -143,7 +143,7 @@ vim.opt.splitbelow = true
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
-vim.opt.list = true
+vim.opt.list = false
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
@@ -238,8 +238,8 @@ vim.api.nvim_set_keymap('n', '<leader>tw', ':set list!<CR>', { noremap = true, s
 -- Resize windows
 vim.keymap.set('n', '<C-M-h>', ':vertical resize -2<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-M-l>', ':vertical resize +2<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-M-j>', ':resize -2<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-M-k>', ':resize +2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-M-k>', ':resize -2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-M-j>', ':resize +2<CR>', { noremap = true, silent = true })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -292,6 +292,10 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end
   end,
 })
+
+vim.api.nvim_create_user_command('Hv', function(opts)
+  vim.cmd('vertical help ' .. opts.args)
+end, { nargs = 1, complete = 'help' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -478,11 +482,14 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          file_ignore_patterns = {
+            'node_modules',
+            '%.git/',
+            'dist/',
+            'build/',
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -1078,59 +1085,10 @@ require('lazy').setup({
     },
   },
 
-  {
-    'Mofiqul/vscode.nvim',
-    lazy = true,
-    opts = {
-      transparent = true,
-      style = 'dark',
-      group_overrides = {
-        -- Variables
-        ['@variable'] = { fg = '#bdbdbd' },
-        ['@variable.c_sharp'] = { link = '@variable' },
-        ['@variable.member.c_sharp'] = { fg = '#65c3cc' },
-        ['@variable.parameter'] = { fg = '#ed8796' },
-        ['@variable.parameter.c_sharp'] = { link = '@variable.parameter' },
-
-        ['@keyword.repeat'] = { fg = '#6c95eb', bold = true },
-        ['@keyword.repeat.c_sharp'] = { link = '@keyword.repeat' },
-
-        -- Boolean
-        ['@boolean'] = { fg = '#6c95eb', italic = true },
-        ['@boolean.c_sharp'] = { link = '@boolean' },
-
-        -- Return
-        ['@keyword.return'] = { fg = '#6c95eb' },
-        ['@keyword.return.c_sharp'] = { link = '@keyword.return', bold = true },
-
-        -- Method
-        ['@function.method'] = { fg = '#38c596', bold = false },
-        ['@function.method.call'] = { link = '@function.method' },
-        ['@function.method.call.c_sharp'] = { link = '@function.method' },
-
-        -- Types (mots clés)
-        ['@keyword'] = { fg = '#6c95eb', italic = false },
-        ['@keyword.conditional'] = { fg = '#6c95eb', italic = false },
-        ['@keyword.conditional.c_sharp'] = { link = '@keyword.conditional' },
-
-        -- Classes
-        ['@lsp.type.class.cs'] = { fg = '#c191ff', bold = true },
-
-        -- Number
-        ['@number'] = { fg = '#e791bc', bold = true },
-        ['@number.c_sharp'] = { link = '@number' },
-
-        -- Comment
-        ['Comment'] = { fg = '#84c26b', italic = true },
-      },
-    },
-  },
-
-  --
   -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -1138,7 +1096,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
