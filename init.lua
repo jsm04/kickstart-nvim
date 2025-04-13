@@ -144,7 +144,7 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '~', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -863,7 +863,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'enter',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -1017,6 +1017,81 @@ require('lazy').setup({
       vim.g.floaterm_width = 0.8
     end,
   },
+
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        globalstatus = false,
+      },
+
+      sections = {
+        lualine_a = {
+          'mode',
+        },
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_c = {
+          {
+            'filename',
+            path = 1,
+          },
+        },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' },
+      },
+    },
+  },
+
+  {
+    'Mofiqul/vscode.nvim',
+    lazy = true,
+    opts = {
+      transparent = true,
+      style = 'dark',
+      group_overrides = {
+        -- Variables
+        ['@variable'] = { fg = '#bdbdbd' },
+        ['@variable.c_sharp'] = { link = '@variable' },
+        ['@variable.member.c_sharp'] = { fg = '#65c3cc' },
+        ['@variable.parameter'] = { fg = '#ed8796' },
+        ['@variable.parameter.c_sharp'] = { link = '@variable.parameter' },
+
+        ['@keyword.repeat'] = { fg = '#6c95eb', bold = true },
+        ['@keyword.repeat.c_sharp'] = { link = '@keyword.repeat' },
+
+        -- Boolean
+        ['@boolean'] = { fg = '#6c95eb', italic = true },
+        ['@boolean.c_sharp'] = { link = '@boolean' },
+
+        -- Return
+        ['@keyword.return'] = { fg = '#6c95eb' },
+        ['@keyword.return.c_sharp'] = { link = '@keyword.return', bold = true },
+
+        -- Method
+        ['@function.method'] = { fg = '#38c596', bold = false },
+        ['@function.method.call'] = { link = '@function.method' },
+        ['@function.method.call.c_sharp'] = { link = '@function.method' },
+
+        -- Types (mots clés)
+        ['@keyword'] = { fg = '#6c95eb', italic = false },
+        ['@keyword.conditional'] = { fg = '#6c95eb', italic = false },
+        ['@keyword.conditional.c_sharp'] = { link = '@keyword.conditional' },
+
+        -- Classes
+        ['@lsp.type.class.cs'] = { fg = '#c191ff', bold = true },
+
+        -- Number
+        ['@number'] = { fg = '#e791bc', bold = true },
+        ['@number.c_sharp'] = { link = '@number' },
+
+        -- Comment
+        ['Comment'] = { fg = '#84c26b', italic = true },
+      },
+    },
+  },
+
   --
   -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
@@ -1057,5 +1132,6 @@ require('lazy').setup({
   },
 })
 
+vim.cmd [[colorscheme vscode]]
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
