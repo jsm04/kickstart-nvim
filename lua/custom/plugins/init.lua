@@ -3,32 +3,11 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  {
-    'savq/melange-nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd [[colorscheme melange]]
-
-      vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = 'melange',
-        callback = function()
-          vim.cmd [[
-          highlight Normal guibg=NONE ctermbg=NONE
-          highlight NormalNC guibg=NONE ctermbg=NONE
-          highlight NvimTreeNormal guibg=NONE ctermbg=NONE
-          highlight SignColumn guibg=NONE ctermbg=NONE
-          highlight VertSplit guibg=NONE ctermbg=NONE
-        ]]
-        end,
-      })
-    end,
-  },
 
   {
     'craftzdog/solarized-osaka.nvim',
-    lazy = true,
-    event = 'VeryLazy',
+    lazy = false,
+    priority = 1000,
     opts = {
       transparent = false,
       terminal_colors = false,
@@ -46,6 +25,16 @@ return {
       dim_inactive = false,
       lualine_bold = true,
     },
+  },
+
+  {
+    'zenbones-theme/zenbones.nvim',
+    dependencies = 'rktjmp/lush.nvim',
+    lazy = true,
+    event = 'VeryLazy',
+    config = function()
+      vim.g.zenbones_darken_comments = 45
+    end,
   },
 
   {

@@ -101,7 +101,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -165,7 +165,7 @@ vim.g.netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 vim.g.netrw_sort_by = 'name' -- Sort files by name (can change to 'time' or 'size')
 vim.g.netrw_show_hidden = 1 -- Show hidden files (e.g., .git, .vimrc)
 vim.g.netrw_banner = 1 -- Disable/Enable banner
-vim.g.netrw_liststyle = 0
+vim.g.netrw_liststyle = 3
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -176,8 +176,6 @@ vim.keymap.set('n', '<leader>e', ':Explore<CR>', { noremap = true, silent = true
 vim.keymap.set('n', '<Leader>\\', ':FloatermToggle<CR>', { noremap = true, silent = true })
 
 -- Move lines up and down
--- vim.api.nvim_set_keymap('v', 'J', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
@@ -195,7 +193,7 @@ vim.keymap.set('n', '<leader>tv', function()
 end, { desc = '[T]oggle diagnostic [V]irtual text' })
 
 -- Show only errors (hide warnings/info)
-vim.keymap.set('n', '<leader>tw', function()
+vim.keymap.set('n', '<leader>tW', function()
   vim.diagnostic.config {
     virtual_text = {
       severity = { min = vim.diagnostic.severity.ERROR },
@@ -1124,6 +1122,6 @@ require('lazy').setup({
   },
 })
 
-vim.cmd [[colorscheme vscode]]
+vim.cmd [[colorscheme solarized-osaka]]
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
